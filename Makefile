@@ -1,4 +1,4 @@
-CROSS_COMPILE      ?= riscv64-unknown-elf-
+CROSS_COMPILE      ?= /usr/local/rv64/riscv/bin/riscv64-unknown-linux-gnu-
 
 AR                 = $(CROSS_COMPILE)ar
 
@@ -21,33 +21,22 @@ subdirs            = examples
 
 libs               = libfemto
 
-configs            = rv32imac rv64imac
-
-CC_rv32imac        = $(CROSS_COMPILE)gcc
-CFLAGS_rv32imac    = -Os -march=rv32imac -mabi=ilp32 -Ienv/common/rv32
-LDFLAGS_rv32imac   =
+configs            = rv64imac
 
 CC_rv64imac        = $(CROSS_COMPILE)gcc
 CFLAGS_rv64imac    = -Os -march=rv64imac -mabi=lp64  -Ienv/common/rv64
 LDFLAGS_rv64imac   =
 
-targets            = rv32imac:default \
-                     rv64imac:default \
-                     rv32imac:spike \
-                     rv64imac:spike \
-                     rv32imac:virt \
-                     rv64imac:virt \
-                     rv32imac:qemu-sifive_e \
-                     rv64imac:qemu-sifive_e \
-                     rv32imac:qemu-sifive_u \
-                     rv64imac:qemu-sifive_u \
-                     rv32imac:coreip-e2-arty
+targets            = rv64imac:qemu-sifive_u
 
 #
 # make rules
 #
 
 all: all_programs
+
+run: all
+	qemu-system-riscv64 -nographic -machine sifive_u -smp 4 -kernel build/bin/rv64imac/qemu-sifive_u/main -bios none
 
 clean:
 	rm -fr build

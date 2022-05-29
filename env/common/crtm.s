@@ -21,17 +21,15 @@ _start:
     la      sp, stacks + STACK_SIZE
     add     sp, sp, t0
 
-    # park all harts excpet hart 0
+    # hart 0 executes setup procedures and others bypass it
     csrr    a0, mhartid
-    bnez    a0, park
+    bnez     a0, secondary
 
-    # jump to libfemto_start_main
     j       libfemto_start_main
 
-    # sleeping harts mtvec calls trap_fn upon receiving IPI
-park:
-    wfi
-    j       park
+secondary:
+    j       libfemto_secondary_main
+
 
     .align 2
 trap_vector:

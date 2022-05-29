@@ -20,3 +20,11 @@ __attribute__((noreturn)) void libfemto_start_main()
 	exit(main(1, argv));
 	__builtin_unreachable();
 }
+
+__attribute__((noreturn)) void libfemto_secondary_main()
+{
+	char *argv[] = { "femto", NULL };
+	_malloc_addblock(&_bss_end, &_memory_end - &_bss_end);
+	exit(main(1, argv));
+	__builtin_unreachable();
+}

@@ -16,7 +16,7 @@ static void sifive_test_init()
 
 static void sifive_test_poweroff(int status)
 {
-    *test = SIFIVE_TEST_PASS;
+    // *test = SIFIVE_TEST_PASS;
     while (1) {
         asm volatile("");
     }
