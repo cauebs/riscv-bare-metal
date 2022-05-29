@@ -24,7 +24,7 @@ libs               = libfemto
 configs            = rv64imac
 
 CC_rv64imac        = $(CROSS_COMPILE)gcc
-CFLAGS_rv64imac    = -Os -march=rv64imac -mabi=lp64  -Ienv/common/rv64
+CFLAGS_rv64imac    = -Os -march=rv64imac -mabi=lp64  -Ienv/common/rv64 -g
 LDFLAGS_rv64imac   =
 
 targets            = rv64imac:qemu-sifive_u
@@ -36,7 +36,13 @@ targets            = rv64imac:qemu-sifive_u
 all: all_programs
 
 run: all
-	qemu-system-riscv64 -nographic -machine sifive_u -smp 4 -kernel build/bin/rv64imac/qemu-sifive_u/main -bios none
+	qemu-system-riscv64 -nographic -machine sifive_u -smp 5 -kernel build/bin/rv64imac/qemu-sifive_u/main -bios none
+
+debug-server: all
+	qemu-system-riscv64 -nographic -machine sifive_u -smp 5 -kernel build/bin/rv64imac/qemu-sifive_u/main -bios none -gdb tcp::1235 -S
+
+debug-client: all
+	gdb-multiarch -x gdb_setup build/bin/rv64imac/qemu-sifive_u/main
 
 clean:
 	rm -fr build

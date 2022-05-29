@@ -13,6 +13,8 @@
 _start:
     # setup default trap vector
     la      t0, trap_vector
+    # enable vectored mode
+    # ori     t0, t0, 1
     csrw    mtvec, t0
 
     # set up stack pointer based on hartid
