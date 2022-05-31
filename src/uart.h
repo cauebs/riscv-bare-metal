@@ -10,8 +10,8 @@ enum {
 static volatile int* uart = (int*) 0x10010000;
 
 void uart_init() {
-	unsigned int uart_freq = 32000000;
-	unsigned int baud_rate = 115200;
+    unsigned int uart_freq = 32000000;
+    unsigned int baud_rate = 115200;
     unsigned int divisor = uart_freq / baud_rate - 1;
     uart[UART_REG_DIV] = divisor;
     uart[UART_REG_TXCTRL] = UART_TXEN;
@@ -23,7 +23,7 @@ int uart_putchar(unsigned char ch) {
 }
 
 void print(char* s) {
-	for (char* c = s; *c != '\0'; ++c) {
-		uart_putchar(*c);
-	}
+    for (char* c = s; *c != '\0'; ++c) {
+        uart_putchar(*c);
+    }
 }

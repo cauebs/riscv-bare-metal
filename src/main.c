@@ -1,33 +1,34 @@
 #include "uart.h"
 #include "machine.h"
 
-extern void trap_handler(unsigned long* regs, unsigned long mcause, unsigned long mepc) {
-	unsigned long interrupt_bit = 1UL << 63;
-	unsigned is_interrupt = (mcause & interrupt_bit) != 0;
-	
-	if (!is_interrupt) {
-		print("unhandled trap!\n");
-		return;
-	}
+void print_hart_id() {
+    unsigned int hart_id = mhartid();
+    switch (hart_id) {
+        case 1: print("1"); break;
+        case 2: print("2"); break;
+        case 3: print("3"); break;
+        case 4: print("4"); break;
+    }
+}
 
-	unsigned int exception_code = mcause & 0b1111111111;
+void pong();
 
-	if (exception_code == 7) {
-		print("machine timer interrupt hit for hart ");
-		switch (mhartid()) {
-			case 1: print("1"); break;
-			case 2: print("2"); break;
-			case 3: print("3"); break;
-			case 4: print("4"); break;
-		}
-		print("\n");
-		schedule_interrupt(1000);
-	}
+void ping() {
+    print("hart ");
+    print_hart_id();
+    print(": ping\n");
+    schedule_interrupt(mhartid(), 1000, pong);
+}
+
+void pong() {
+    print("hart ");
+    print_hart_id();
+    print(": pong\n");
+    schedule_interrupt(mhartid(), 1000, ping);
 }
 
 int main() {
-	enable_machine_timer_interrupt();
-
-	unsigned long initial_delay = 250 * mhartid();
-	schedule_interrupt(initial_delay);
+    unsigned int hart_id = mhartid();
+    unsigned long initial_delay = 250 * hart_id;
+    schedule_interrupt(hart_id, initial_delay, ping);
 }
