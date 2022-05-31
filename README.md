@@ -8,10 +8,21 @@ $ ninja -C build
 ```
 
 ## Running
+
 ```
 $ qemu-system-riscv64 -machine sifive_u -smp 5 -nographic -bios none -kernel build/main
 ```
-- Use `C-x a` to stop the emulator.
+**OR using the included Dockerfile**
+
+```
+docker build . -t riscv-mp-timers
+./run-docker meson build --cross-file cross_file.txt
+./run-docker ninja -C build
+qemu-system-riscv64 -machine sifive_u -smp 5 -nographic -bios none -kernel build/main
+```
+
+Tips:
+- Use `Ctrl-x a` to stop the emulator.
 
 ## Debugging
 ```
