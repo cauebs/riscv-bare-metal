@@ -1,5 +1,12 @@
 #pragma once
 
+int main(void);
+
+extern __attribute__((noreturn)) void _start_main() {
+    main();
+    while (1) {}
+}
+
 unsigned int mhartid() {
 	unsigned int id;
 	asm("csrr %0, mhartid" : "=r"(id) : : );

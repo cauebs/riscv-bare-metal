@@ -20,7 +20,7 @@ _start:
 
     # harts 1, 2, 3, 4 skip initialization
     bnez    t0, _main
-    
+
     lla     t0, _bss_start
     lla     t1, _bss_end
 clear_bss:
@@ -33,7 +33,7 @@ clear_bss:
 _main:
     # re-enable interrupts
     csrci   mstatus, 3
-    j       main
+    j       _start_main
 
 park:
     wfi

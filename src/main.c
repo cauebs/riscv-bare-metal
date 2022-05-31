@@ -30,6 +30,4 @@ int main() {
 
 	unsigned long initial_delay = 250 * mhartid();
 	schedule_interrupt(initial_delay);
-
-	while (1) {}
 }
