@@ -1,0 +1,14 @@
+[binaries]
+c = '/usr/local/rv64/riscv/bin/riscv64-unknown-linux-gnu-gcc'
+
+[built-in options]
+c_args = ['-march=rv64imac', '-mabi=lp64', '-mcmodel=medany',
+          '-ffunction-sections', '-fdata-sections', '-Os', '-g']
+c_link_args = ['-nostartfiles', '-nostdlib', '-nostdinc', '-static', '-lgcc',
+               '-Wl,--nmagic', '-Wl,--gc-sections', '-Wl,-T,../src/default.lds']
+
+[host_machine]
+system = 'none'
+cpu_family = 'riscv64'
+cpu = 'riscv64imac'
+endian = 'little'

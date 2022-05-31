@@ -1,0 +1,10 @@
+set arch riscv:rv64
+set schedule-multiple on
+
+target extended-remote localhost:1235
+file build/main
+
+add-inferior
+inferior 2
+attach 2
+file build/main

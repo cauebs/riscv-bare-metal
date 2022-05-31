@@ -1,39 +1,46 @@
-# See LICENSE for license details.
-
 .include "macros.s"
 .include "constants.s"
-
-#
-# start of trap handler
-#
 
 .section .text.init,"ax",@progbits
 .globl _start
 
 _start:
+    # disable interrupts
+    csrci   mstatus, 3
+
     # setup default trap vector
     la      t0, trap_vector
-    # enable vectored mode
-    # ori     t0, t0, 1
     csrw    mtvec, t0
 
     # set up stack pointer based on hartid
     csrr    t0, mhartid
-    slli    t0, t0, STACK_SHIFT
+    slli    t1, t0, STACK_SHIFT
     la      sp, stacks + STACK_SIZE
-    add     sp, sp, t0
+    add     sp, sp, t1
 
-    # hart 0 executes setup procedures and others bypass it
-    csrr    a0, mhartid
-    bnez     a0, secondary
+    # harts 1, 2, 3, 4 skip initialization
+    bnez    t0, _main
+    
+    lla     t0, _bss_start
+    lla     t1, _bss_end
+clear_bss:
+    # monitor hart (0) zero-initializes memory and parks
+    beq     t0, t1, park
+    sd      zero, (t0)
+    addi    t0, t0, 8
+    j       clear_bss
 
-    j       libfemto_start_main
+_main:
+    # re-enable interrupts
+    csrci   mstatus, 3
+    j       main
 
-secondary:
-    j       libfemto_secondary_main
+park:
+    wfi
+    j       park
 
 
-    .align 2
+.align 2
 trap_vector:
     # Save registers.
     addi    sp, sp, -CONTEXT_SIZE
@@ -82,8 +89,9 @@ trap_vector:
     # Return
     mret
 
-    .bss
-    .align 4
-    .global stacks
+
+.bss
+.align 4
+.global stacks
 stacks:
-    .skip STACK_SIZE * MAX_HARTS
+.skip STACK_SIZE * MAX_HARTS
